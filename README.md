@@ -1,53 +1,71 @@
-# RISC-V Single-Cycle
+# RISC-V Single-Cycle RV32I Processor
 
-This is the starter/specification repository for this course's single-cycle RISC-V processor project. Each student **creates their own repository from this template** (**Use this template** → **Create a new repository**) and independently builds their **own complete single-cycle RV32I processor**, module by module.
+## 1. Overview
 
-Maintainer: COD TA's of '27 graduating batch.
+This project implements a single-cycle RISC-V RV32I processor using SystemVerilog. It uses a modular architecture consisting of instruction fetch, decode, execute, and writeback stages.
 
-## How this repository works
+## 2. Architecture
 
-- This repository defines the **architecture and module contracts** for the processor. It does not contain any RTL implementation.
-- Every student implements every module themselves, entirely within their own repository.
-- Students do not submit pull requests back to this repository. It is the shared specification, not a shared codebase.
-- Module, port and parameter names are up to you. Each module's **port count, directions, widths and behavior** must match its specification, and you tell the CI how your names map to it in `rnr-stage.yaml`. See the assignment handout.
+The processor consists of four stages:
 
-## Modules
+1. **IF:** Program counter and instruction fetching.
+2. **ID:** Instruction decoding, immediate generation, register-file access, and control signals.
+3. **EX:** ALU operations, branch and jump calculations.
+4. **WB:** Selection of data to write back into registers.
 
-Click on a module name to see its folder and specification. They are listed in the order the CI checks them (stage in brackets):
+Instruction and data memories are external to the processor core.
 
-- [IF_Stage](IF_Stage/) (fetch)
-- [Decoder](Decoder/) (decode)
-- [Immediate_Generator](Immediate_Generator/) (decode)
-- [Register_File](Register_File/) (decode)
-- [Main_Control](Main_Control/) (decode)
-- [ID_Stage](ID_Stage/) (decode)
-- [ALU](ALU/) (execute)
-- [ALU_Control](ALU_Control/) (execute)
-- [EX_Stage](EX_Stage/) (execute)
-- [WB_Stage](WB_Stage/) (writeback)
-- [Single_Cycle_RISCV](Single_Cycle_RISCV/) (integration)
+## 3. Repository Structure
 
-## Tools
+```text
+├── ALU/
+├── ALU_Control/
+├── Decoder/
+├── EX_Stage/
+├── ID_Stage/
+├── IF_Stage/
+├── Immediate_Generator/
+├── Main_Control/
+├── Register_File/
+├── Single_Cycle_RISCV/
+│   ├── single_cycle_riscv.sv
+│   └── tb_single_cycle_riscv.sv
+├── WB_Stage/
+├── README.md
+└── rnr-stage.yaml
+```
 
-- **Vivado is the official/recommended development environment** for this course.
-- The CI synthesizes your RTL with **Yosys 0.33**, which cannot parse SystemVerilog assignment patterns such as `'{default: 0}`. Use a `for` loop to clear the register file. File paths in `rnr-stage.yaml` must not contain spaces.
+## 4. Tools Used
 
-## Architecture
+- SystemVerilog
+- Xilinx Vivado
+- Yosys 0.33
+- Git and GitHub
 
-The core is a single-cycle RV32I processor split into four stages. The instruction and data memories are **outside** the core (the `instruction` and `mem_out` inputs). The table below is the architectural source of truth for how the modules integrate; your ports must stay consistent with it.
+## 5. Verification
 
-| Signal | From -> To |
-|---|---|
-| `address` | IF -> instruction memory, EX |
-| `instruction` | instruction memory -> ID |
-| `rs1_data` `rs2_data` `imm_out` + control | ID -> EX |
-| `and_out_ex` | EX -> IF `and_out` |
-| `pc_ex_out` | EX -> IF `pc_signed_offset`, WB `pc_signed_offset` |
-| `alu_out` | EX -> WB, data memory address |
-| `pc_new` | IF -> WB `return_addr` |
-| `wb_data` | WB -> ID register file |
-| `rs2_data`, `mem_write`, `mem_read`, `fn3` | core outputs -> data memory |
+The processor was simulated and its testbench verified using Vivado Behavioral Simulation.
 
-## Submission Workflow
+The testbench checks:
+- Instruction decoding and immediate generation.
+- Register-file operations.
+- ALU operations.
+- Branch and jump handling.
+- Memory interface and writeback.
+- Processor integration.
 
-Submit your repository URL for this checkpoint through the course Google Form. The assignment handout explains how to configure and verify your repository.
+## 6. Running the Simulation
+
+1. Open the project in Vivado.
+2. Add all `.sv` design files.
+3. Add `tb_single_cycle_riscv.sv` as a simulation source.
+4. Set the testbench as the simulation top.
+5. Run Behavioral Simulation.
+
+## 7. Conclusion
+
+The project implements a modular single-cycle RV32I processor and demonstrates practical experience with processor architecture, SystemVerilog RTL design, simulation, and verification.
+
+## 8. Repository
+
+[GitHub Repository](https://github.com/chit-06/-Single-Cycle-RISCV-Submission)

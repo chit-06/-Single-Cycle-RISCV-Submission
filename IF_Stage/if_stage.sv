@@ -27,7 +27,6 @@ module if_stage (
             pc_reg <= next_pc;
     end
 
-    // Current PC
     assign address = pc_reg;
 
 endmodule
